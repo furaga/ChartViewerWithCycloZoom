@@ -28,6 +28,9 @@ namespace Chart3
         // 拡大率
         double scale = 1.0;
 
+        // ズーム中か
+        bool zooming = false;
+
         // グラフ描画用のペン
         Pen defaultPen = new Pen(new SolidBrush(Color.Black));
         Pen grayPen = new Pen(new SolidBrush(Color.Gray));
@@ -40,7 +43,7 @@ namespace Chart3
         SolidBrush blueBrush = new SolidBrush(Color.Blue);
 
         // 時間計測用ストップウォッチ
-        //        Stopwatch stopWatch = null;
+        Stopwatch stopWatch = null;
 
 
         //-------------------------------------------------------------------------------
@@ -50,7 +53,7 @@ namespace Chart3
         {
             InitializeComponent();
 
-            MouseWheel += PictureBoxChart_MouseWheel;
+            // MouseWheel += PictureBoxChart_MouseWheel;
 
             try
             {
@@ -89,20 +92,17 @@ namespace Chart3
         //
         //-------------------------------------------------------------------------------
 
-        //-------------------------------------------------------------------------------
-        // マウス
-        //-------------------------------------------------------------------------------
-
+        /*
         // マウスホイール
         void PictureBoxChart_MouseWheel(object sender, MouseEventArgs e)
         {
             Zoom(e.Delta / 100 * 1.3f);
             DrawChart();
         }
+        */
 
         void Zoom(double dScale)
         {
-
             var prevScale = scale;
 
             scale += dScale;
@@ -129,20 +129,18 @@ namespace Chart3
             DrawChart();
         }
 
-        bool zooming = false;
         // タイマー呼び出し
         private void timer_Tick(object sender, EventArgs e)
         {
             Ellipse ellipse;
-            int dir;
-            zooming = cycroZoom.CheckZoom(Cursor.Position, out ellipse, out dir);
-
-            label1.Text = zooming.ToString() + " " + "e = " + ellipse.E;
-            label1.Refresh();
+            double angle;
+            zooming = cycroZoom.CheckZoom(Cursor.Position, out ellipse, out angle);
 
             if (zooming)
             {
-                Zoom(1.3 * -dir);
+                double bias = angle > 0 ? 0.14 : 0.25;
+                var dScale = scale * angle * bias;
+                Zoom(dScale);
             }
 
 
@@ -162,8 +160,14 @@ namespace Chart3
                 graphOffsetUnit += 0.01 / scale;
             }
 
+            if (stopWatch != null)
+            {
+                labelTime.Text = string.Format("経過時間 : {0:0} 秒", stopWatch.Elapsed.TotalSeconds);
+            }
+
             DrawChart();
         }
+
 
         //-------------------------------------------------------------------------------
         //
@@ -301,8 +305,6 @@ namespace Chart3
             }
             finally
             {
-                labelTime.Text = sw.ElapsedMilliseconds + " ms";
-
                 // 再描画
                 pictureBoxChart.Refresh();
                 labelValue.Refresh();
@@ -375,6 +377,27 @@ namespace Chart3
             }
         }
 
-
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                if (stopWatch == null)
+                {
+                    stopWatch = Stopwatch.StartNew();
+                    scale = 1;
+                    graphOffsetUnit = 0;
+                    label2.Text = "スペースキーで終了";
+                }
+                else
+                {
+                    stopWatch = null;
+                    label2.Text = "スペースキーで開始";
+                }
+            }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                Close();
+            }
+        }
     }
 }

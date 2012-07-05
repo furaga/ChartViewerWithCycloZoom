@@ -35,10 +35,10 @@
             this.buttonLeft = new System.Windows.Forms.Button();
             this.buttonRight = new System.Windows.Forms.Button();
             this.pictureBoxChart = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.labelTime = new System.Windows.Forms.Label();
             this.labelValue = new System.Windows.Forms.Label();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -70,11 +70,11 @@
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.label1);
+            this.splitContainer1.Panel2.Controls.Add(this.label2);
             this.splitContainer1.Panel2.Controls.Add(this.labelTime);
             this.splitContainer1.Panel2.Controls.Add(this.labelValue);
             this.splitContainer1.Size = new System.Drawing.Size(1010, 573);
-            this.splitContainer1.SplitterDistance = 542;
+            this.splitContainer1.SplitterDistance = 545;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -94,7 +94,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.pictureBoxChart);
-            this.splitContainer2.Size = new System.Drawing.Size(1010, 542);
+            this.splitContainer2.Size = new System.Drawing.Size(1010, 545);
             this.splitContainer2.SplitterDistance = 67;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 0;
@@ -149,41 +149,33 @@
             this.pictureBoxChart.Location = new System.Drawing.Point(0, 0);
             this.pictureBoxChart.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBoxChart.Name = "pictureBoxChart";
-            this.pictureBoxChart.Size = new System.Drawing.Size(1010, 472);
+            this.pictureBoxChart.Size = new System.Drawing.Size(1010, 475);
             this.pictureBoxChart.TabIndex = 0;
             this.pictureBoxChart.TabStop = false;
             this.pictureBoxChart.SizeChanged += new System.EventHandler(this.OnResize);
             // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.label1.Location = new System.Drawing.Point(163, 0);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(163, 28);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "label1";
-            // 
             // labelTime
             // 
             this.labelTime.Dock = System.Windows.Forms.DockStyle.Left;
+            this.labelTime.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
             this.labelTime.Location = new System.Drawing.Point(0, 0);
             this.labelTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelTime.Name = "labelTime";
-            this.labelTime.Size = new System.Drawing.Size(163, 28);
+            this.labelTime.Size = new System.Drawing.Size(280, 25);
             this.labelTime.TabIndex = 0;
-            this.labelTime.Text = "label1";
+            this.labelTime.Text = "経過時間 : 0 秒";
             // 
             // labelValue
             // 
             this.labelValue.Dock = System.Windows.Forms.DockStyle.Right;
             this.labelValue.Font = new System.Drawing.Font("MS UI Gothic", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.labelValue.Location = new System.Drawing.Point(715, 0);
+            this.labelValue.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.labelValue.Location = new System.Drawing.Point(730, 0);
             this.labelValue.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.labelValue.Name = "labelValue";
-            this.labelValue.Size = new System.Drawing.Size(295, 28);
+            this.labelValue.Size = new System.Drawing.Size(280, 25);
             this.labelValue.TabIndex = 1;
-            this.labelValue.Text = "label2";
+            this.labelValue.Text = "1990/10/7";
             this.labelValue.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // timer
@@ -192,15 +184,28 @@
             this.timer.Interval = 30;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
+            // label2
+            // 
+            this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label2.Font = new System.Drawing.Font("MS UI Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.label2.Location = new System.Drawing.Point(280, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(450, 25);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "スペースキーで開始";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1010, 573);
             this.Controls.Add(this.splitContainer1);
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -229,7 +234,7 @@
         private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Button buttonRight;
         private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 

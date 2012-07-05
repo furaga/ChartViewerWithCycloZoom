@@ -33,7 +33,7 @@ namespace Chart3
 
     class CycloZoom
     {
-        const int MAX_CAPACITY = 20;
+        const int MAX_CAPACITY = 30;
         const int MIN_SQDIR = 25;
 
         public Point[] stroke = new Point[MAX_CAPACITY];
@@ -46,12 +46,12 @@ namespace Chart3
 
         }
 
-        public bool CheckZoom(Point point, out Ellipse ellipse, out int dir)
+        public bool CheckZoom(Point point, out Ellipse ellipse, out double angle)
         {
             stroke[curIndex] = point;
             if (strokeLength < MAX_CAPACITY) strokeLength++;
 
-            dir = 1;
+            angle = 0;
             ellipse = new Ellipse();
 
             var curDir = new Point(point.X - stroke[prevIndex].X, point.Y - stroke[prevIndex].Y);
@@ -85,14 +85,20 @@ namespace Chart3
             if (cnt >= 2)
             {
                 ellipse = GetEllipse(index, curIndex);
+                // ellise.Eが小さいほどまん丸に近い
                 if (ellipse.E < 0.9)
                 {
-                    var x1 = stroke[prevIndex].X - ellipse.X;
-                    var y1 = stroke[prevIndex].Y - ellipse.Y;
-                    var x2 = point.X - ellipse.X;
-                    var y2 = point.Y - ellipse.Y;
+                    // ズーム
+                    double x1 = stroke[prevIndex].X - ellipse.X;
+                    double y1 = stroke[prevIndex].Y - ellipse.Y;
+                    double x2 = point.X - ellipse.X;
+                    double y2 = point.Y - ellipse.Y;
+
+                    double dot = x1 * x2 + y1 * y2;
+                    double d = Math.Sqrt((x1 * x1 + y1 * y1) * (x2 * x2 + y2 * y2));
+
+                    angle = Math.Acos(dot / d) * (x1 * y2 - x2 * y1 > 0 ? 1 : -1);
                     ans = true;
-                    dir = x1 * y2 - x2 * y1 < 0 ? 1 : -1;
                 }
             }
 
@@ -189,6 +195,7 @@ namespace Chart3
                     if (i == j) L[i * N + j] = 1.0;
                 }
             }
+
             double sum;
             for (int i = 0; i < N; i++)
             {
@@ -196,7 +203,6 @@ namespace Chart3
                 {
                     if (i > j)
                     {
-                        /*L成分を求める*/
                         sum = 0.0;
                         for (int k = 0; k < j; k++)
                         {
@@ -206,7 +212,6 @@ namespace Chart3
                     }
                     else
                     {
-                        /*U成分を求める*/
                         sum = 0.0;
                         for (int k = 0; k < i; k++)
                         {
